@@ -21,5 +21,10 @@ namespace chipeight
         {
             return canvas.Handle;
         }
+
+        private void MainForm_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            Application.Exit();
+        }
     }
 }
