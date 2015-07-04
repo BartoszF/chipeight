@@ -1,4 +1,5 @@
 using System;
+using eightmulator;
 
 namespace chipeight
 {
@@ -8,11 +9,14 @@ namespace chipeight
         /// <summary>
         /// The main entry point for the application.
         /// </summary>
+        /// 
+        [STAThreadAttribute]
         static void Main(string[] args)
         {
-            MainForm form = new MainForm();
+            Emulator emul8 = new Emulator();
+            MainForm form = new MainForm(emul8);
             form.Show();
-            Game1 game = new Game1(form.getDrawSurface());
+            Game1 game = new Game1(form.getDrawSurface(),emul8);
             game.Run();  
         }
     }

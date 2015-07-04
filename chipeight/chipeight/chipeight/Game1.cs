@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using eightmulator;
+
 namespace chipeight
 {
     /// <summary>
@@ -21,7 +23,9 @@ namespace chipeight
 
         IntPtr drawSurface;
 
-        public Game1(IntPtr drawSurface)
+        Emulator emul8;
+
+        public Game1(IntPtr drawSurface, Emulator emul8)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
@@ -30,7 +34,9 @@ namespace chipeight
             graphics.PreparingDeviceSettings +=
             new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
             System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged +=
-            new EventHandler(Game1_VisibleChanged); 
+            new EventHandler(Game1_VisibleChanged);
+
+            this.emul8 = emul8;
         }
 
         /// <summary>

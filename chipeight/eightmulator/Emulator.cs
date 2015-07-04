@@ -9,6 +9,8 @@ using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using Microsoft.Xna.Framework.Media;
 
+using System.IO;
+
 namespace eightmulator
 {
     public class Emulator
@@ -28,6 +30,20 @@ namespace eightmulator
         public void Init()
         {
             
+        }
+
+        public void LoadFile(Stream io)
+        {
+            using (BinaryReader sr = new BinaryReader(io))
+            {
+                byte[] buff = sr.ReadBytes((int)sr.BaseStream.Length);
+                
+                for(int i=0;i<buff.Length;i++)
+                {
+                    memory[0x200 + i] = buff[i];
+                    Console.Write(buff[i]);
+                }
+            }
         }
 
         public void Cycle()
