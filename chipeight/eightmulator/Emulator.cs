@@ -15,21 +15,26 @@ namespace eightmulator
 {
     public class Emulator
     {
-        ushort opcode;
-        byte[] memory = new byte[4096];
-        byte[] V = new byte[16];
-        ushort I;
-        ushort PC;
-        byte[] gfx = new byte[64 * 32];
-        byte delay_timer;
-        byte sound_timer;
-        ushort[] stack = new ushort[16];
-        ushort sp;
-        byte[] keys = new byte[16];
+        public ushort opcode;
+        public byte[] memory = new byte[4096];
+        public byte[] V = new byte[16];
+        public ushort I;
+        public ushort PC;
+        public byte[] gfx = new byte[64 * 32];
+        public byte delay_timer;
+        public byte sound_timer;
+        public ushort[] stack = new ushort[16];
+        public ushort sp;
+        public byte[] keys = new byte[16];
 
         public void Init()
         {
-            
+            PC = 0x200;         // Program counter starts at 0x200
+            opcode = 0;         // Reset current opcode	
+            I = 0;              // Reset index register
+            sp = 0;
+
+            Opcodes.Init(this);
         }
 
         public void LoadFile(Stream io)
@@ -48,7 +53,7 @@ namespace eightmulator
 
         public void Cycle()
         {
-
+            opcode = (ushort)((memory[PC] << 8) | (memory[PC + 1]));
         }
 
         public void Draw(SpriteBatch sb)
