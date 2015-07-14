@@ -27,6 +27,8 @@ namespace eightmulator
         public ushort sp;
         public byte[] keys = new byte[16];
 
+        public Opcodes opcodes;
+
         public void Init()
         {
             PC = 0x200;         // Program counter starts at 0x200
@@ -34,7 +36,7 @@ namespace eightmulator
             I = 0;              // Reset index register
             sp = 0;
 
-            Opcodes.Init(this);
+            opcodes = new Opcodes(this);
         }
 
         public void LoadFile(Stream io)
@@ -54,6 +56,11 @@ namespace eightmulator
         public void Cycle()
         {
             opcode = (ushort)((memory[PC] << 8) | (memory[PC + 1]));
+
+            if(!opcodes.DoOpcode(opcode))
+            {
+                Console.WriteLine("Problem executing opcode [{0}]! PC++", opcode);
+            }
         }
 
         public void Draw(SpriteBatch sb)
