@@ -38,11 +38,49 @@ namespace eightmulator
             }
         }
 
+        public bool cls(ushort op)
+        {
+            for(int i = 0;i<emu.gfx.Length;i++)
+            {
+                emu.gfx[i] = 0;
+            }
+
+            emu.PC += 2;
+
+            return true;
+        }
+
+        public bool JP(ushort op)
+        {
+            ushort p = (ushort)(op & 0x0FFF);
+            emu.PC = p;
+
+            return true;
+        }
+
+        public bool ret(ushort op)
+        {
+            emu.PC = emu.stack[emu.sp];
+            emu.sp--;
+
+            return true;
+        }
+
         public bool call(ushort op) //0x2NNN
         {
             emu.stack[emu.sp] = emu.PC;
             ++emu.sp;
             emu.PC = (ushort)(op & 0x0FFF);
+
+            return true;
+        }
+
+        public bool SEXb(ushort op)
+        {
+            byte x = (byte)(op & 0x0F00);
+            byte nn = (byte)(op & 0x00FF);
+
+            if (emu.V[x] == nn) emu.PC+=2;
 
             return true;
         }
