@@ -16,7 +16,7 @@ namespace chipeight
     /// <summary>
     /// This is the main type for your game
     /// </summary>
-    public class Game1 : Microsoft.Xna.Framework.Game
+    public class Main : Microsoft.Xna.Framework.Game
     {
         GraphicsDeviceManager graphics;
         SpriteBatch spriteBatch;
@@ -25,7 +25,7 @@ namespace chipeight
 
         Emulator emul8;
 
-        public Game1(IntPtr drawSurface, Emulator emul8)
+        public Main(IntPtr drawSurface, Emulator emul8)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
