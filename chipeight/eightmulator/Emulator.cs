@@ -15,7 +15,7 @@ namespace eightmulator
 {
     public class Emulator
     {
-        ushort opcode;
+        int opcode;
         byte[] memory = new byte[4096];
         byte[] V = new byte[16];
         ushort I;
@@ -29,7 +29,19 @@ namespace eightmulator
 
         public void Init()
         {
-            
+            PC = 0x200;  // Program counter starts at 0x200
+            opcode = 0;      // Reset current opcode	
+            I = 0;      // Reset index register
+            sp = 0;      // Reset stack pointer
+
+            // Clear display	
+            // Clear stack
+            // Clear registers V0-VF
+            // Clear memory
+
+            // Load fontset
+            /*for (int i = 0; i < 80; ++i)
+                memory[i] = chip8_fontset[i];*/
         }
 
         public void LoadFile(Stream io)
@@ -48,7 +60,7 @@ namespace eightmulator
 
         public void Cycle()
         {
-
+            opcode = memory[PC] << 8 | memory[PC + 1];
         }
 
         public void Draw(SpriteBatch sb)
