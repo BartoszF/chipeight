@@ -21,6 +21,7 @@ namespace eightmulator
         public ushort I;
         public ushort PC;
         public byte[] gfx = new byte[64 * 32];
+        Color[] data = new Color[64 * 32];
         public byte delay_timer;
         public byte sound_timer;
         public bool draw = false;
@@ -31,9 +32,13 @@ namespace eightmulator
         public byte key;
         public Random random;
 
+        public bool running = false;
+
         public Opcodes opcodes;
 
-        public void Init()
+        Texture2D tex;
+
+        public void Init(GraphicsDevice gd)
         {
             PC = 0x200;         // Program counter starts at 0x200
             opcode = 0;         // Reset current opcode	
@@ -48,6 +53,9 @@ namespace eightmulator
             {
                 memory[i] = font[i];
             }
+
+            tex = new Texture2D(gd, 64, 32);
+            gd.Textures[0] = null;
         }
 
         public void LoadFile(Stream io)
@@ -61,6 +69,8 @@ namespace eightmulator
                     memory[0x200 + i] = buff[i];
                     Console.Write(buff[i]);
                 }
+
+                running = true;
             }
         }
 
@@ -79,12 +89,24 @@ namespace eightmulator
                 Console.WriteLine("Problem executing opcode [{0}]! PC++", opcode);
             }
 
+            if(draw)
+            {
+                for (int i = 0; i < gfx.Length; i++)
+                {
+                    data[i] = new Color(gfx[i] * 255, gfx[i] * 255, gfx[i] * 255);
+                }
+
+                tex.GraphicsDevice.Textures[0] = null;
+                tex.SetData<Color>(data);
+
+                draw = false;
+            }
             PC += 2;
         }
 
         public void Draw(SpriteBatch sb)
         {
-
+            sb.Draw(tex, new Rectangle(0, 0, 64, 32), Color.White);
         }
 
         byte[] font = new byte[80]

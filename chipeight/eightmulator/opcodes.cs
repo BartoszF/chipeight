@@ -82,14 +82,14 @@ namespace eightmulator
         public bool JP(ushort op)   //1000
         {
             ushort p = (ushort)(op & 0x0FFF);
-            emu.PC = p;
+            emu.PC = (ushort)(p-2);
 
             return true;
         }
 
         public bool ret(ushort op)  //00EE
         {
-            emu.PC = emu.stack[emu.sp];
+            emu.PC = (ushort)(emu.stack[emu.sp]-2);
             emu.sp--;
 
             return true;
@@ -99,14 +99,14 @@ namespace eightmulator
         {
             emu.stack[emu.sp] = emu.PC;
             ++emu.sp;
-            emu.PC = (ushort)(op & 0x0FFF);
+            emu.PC = (ushort)((op & 0x0FFF) - 2);
 
             return true;
         }
 
         public bool SEXb(ushort op) //3000
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
             byte nn = (byte)(op & 0x00FF);
 
             if (emu.V[x] == nn) emu.PC+=2;
@@ -116,7 +116,7 @@ namespace eightmulator
 
         public bool SNEXb(ushort op) //4000
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
             byte nn = (byte)(op & 0x00FF);
 
             if (emu.V[x] != nn) emu.PC += 2;
@@ -126,8 +126,8 @@ namespace eightmulator
 
         public bool SEXY(ushort op) //5000
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             if (emu.V[x] == emu.V[y]) emu.PC += 2;
 
@@ -136,7 +136,7 @@ namespace eightmulator
 
         public bool LDXb(ushort op) //6000
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
             byte nn = (byte)(op & 0x00FF);
 
             emu.V[x] = nn;
@@ -146,7 +146,7 @@ namespace eightmulator
 
         public bool ADXb(ushort op) //7000
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
             byte nn = (byte)(op & 0x00FF);
 
             emu.V[x] += nn;
@@ -156,8 +156,8 @@ namespace eightmulator
 
         public bool LDXY(ushort op) //8000
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             emu.V[x] = emu.V[y];
 
@@ -166,8 +166,8 @@ namespace eightmulator
 
         public bool ORXY(ushort op) //8001
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             emu.V[x] |= emu.V[y];
 
@@ -176,8 +176,8 @@ namespace eightmulator
 
         public bool ANDXY(ushort op) //8002
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             emu.V[x] &= emu.V[y];
 
@@ -186,8 +186,8 @@ namespace eightmulator
 
         public bool XORXY(ushort op) //8003
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             emu.V[x] ^= emu.V[y];
 
@@ -196,8 +196,8 @@ namespace eightmulator
 
         public bool ADDXY(ushort op) //8004
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             emu.V[x] += emu.V[y];
 
@@ -212,8 +212,8 @@ namespace eightmulator
 
         public bool SUBXY(ushort op) //8005
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             if (emu.V[x] > emu.V[y])
             {
@@ -231,8 +231,8 @@ namespace eightmulator
 
         public bool SHRXY(ushort op) //8006
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             if (GetBit(emu.V[x], 0)) emu.V[0xF] = 1;
             else
@@ -247,8 +247,8 @@ namespace eightmulator
 
         public bool SUBNXY(ushort op) //8007
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             if (emu.V[y] > emu.V[x])
             {
@@ -266,8 +266,8 @@ namespace eightmulator
 
         public bool SHLXY(ushort op) //8008
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             if (GetBit(emu.V[x], 7)) emu.V[0xF] = 1;
             else
@@ -282,8 +282,8 @@ namespace eightmulator
 
         public bool SNEXy(ushort op) //9000
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = (byte)(op & 0x0F00 >> 8);
+            byte y = (byte)(op & 0x00F0 >> 8);
 
             if (emu.V[x] != emu.V[y]) emu.PC += 2;
 
@@ -310,7 +310,7 @@ namespace eightmulator
 
         public bool RNDxb(ushort op) //C000
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
             byte kk = (byte)(op & 0x00FF);
 
             emu.V[x] = (byte)(emu.random.Next(0, 255) & kk);
@@ -320,14 +320,14 @@ namespace eightmulator
 
         public bool DRWXYN(ushort op) //D000
         {
-            byte x = (byte)(op & 0x0F00);
-            byte y = (byte)(op & 0x00F0);
+            byte x = emu.V[(byte)(op & 0x0F00 >> 8)];
+            byte y = emu.V[(byte)(op & 0x00F0 >> 8)];
             byte n = (byte)(op & 0x000F);
 
             for (byte i = 0; i < n;i++)
             {
-                int ind = y * 32 + x;
-                byte data = emu.memory[emu.I + n];
+                int ind = y * 64 + x;
+                byte data = emu.memory[emu.I + i];
 
                 byte was = emu.gfx[ind];
                 emu.gfx[ind] ^= data;
@@ -351,7 +351,7 @@ namespace eightmulator
 
         public bool SKPx(ushort op) //E09E
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             if(emu.keys[emu.V[x]] != 0)
             {
@@ -363,7 +363,7 @@ namespace eightmulator
 
         public bool SKPNx(ushort op) //E0A1
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             if (emu.keys[emu.V[x]] == 0)
             {
@@ -375,7 +375,7 @@ namespace eightmulator
 
         public bool LDxk(ushort op) //F00A
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             //Little hack ;)
             emu.waitKey = true;
@@ -386,7 +386,7 @@ namespace eightmulator
 
         public bool LDDTx(ushort op) //F015
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             emu.delay_timer = emu.V[x];
 
@@ -395,7 +395,7 @@ namespace eightmulator
 
         public bool LDSTx(ushort op) //F018
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             emu.sound_timer = emu.V[x];
 
@@ -404,7 +404,7 @@ namespace eightmulator
 
         public bool ADDIx(ushort op) //F01E
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             emu.I += emu.V[x];
 
@@ -413,7 +413,7 @@ namespace eightmulator
 
         public bool LDFx(ushort op) //F029
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)(op & 0x0F00 >> 8);
 
             emu.I = (ushort)(emu.V[x] * 5);
 

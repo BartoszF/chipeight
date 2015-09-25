@@ -80,6 +80,8 @@ namespace chipeight
             // Create a new SpriteBatch, which can be used to draw textures.
             spriteBatch = new SpriteBatch(GraphicsDevice);
 
+            emul8.Init(graphics.GraphicsDevice);
+
             // TODO: use this.Content to load your game content here
         }
 
@@ -103,6 +105,9 @@ namespace chipeight
             if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
                 this.Exit();
 
+            if(emul8.running)
+                emul8.Cycle();
+
             // TODO: Add your update logic here
 
             base.Update(gameTime);
@@ -116,6 +121,12 @@ namespace chipeight
         {
             GraphicsDevice.Clear(Color.Black);
 
+            spriteBatch.Begin();
+
+            if(emul8.running)
+                emul8.Draw(spriteBatch);
+
+            spriteBatch.End();
             // TODO: Add your drawing code here
 
             base.Draw(gameTime);
