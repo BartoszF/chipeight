@@ -23,9 +23,13 @@ namespace eightmulator
         public byte[] gfx = new byte[64 * 32];
         public byte delay_timer;
         public byte sound_timer;
+        public bool draw = false;
         public ushort[] stack = new ushort[16];
         public ushort sp;
         public byte[] keys = new byte[16];
+        public bool waitKey = false;
+        public byte key;
+        public Random random;
 
         public Opcodes opcodes;
 
@@ -35,6 +39,8 @@ namespace eightmulator
             opcode = 0;         // Reset current opcode	
             I = 0;              // Reset index register
             sp = 0;
+
+            random = new Random();
 
             opcodes = new Opcodes(this);
 
@@ -60,12 +66,20 @@ namespace eightmulator
 
         public void Cycle()
         {
+            if (delay_timer > 0) delay_timer--;
+            if (sound_timer > 0)
+            {
+                sound_timer--;
+            }
+
             opcode = (ushort)((memory[PC] << 8) | (memory[PC + 1]));
 
             if(!opcodes.DoOpcode(opcode))
             {
                 Console.WriteLine("Problem executing opcode [{0}]! PC++", opcode);
             }
+
+            PC += 2;
         }
 
         public void Draw(SpriteBatch sb)
