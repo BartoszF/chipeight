@@ -80,6 +80,8 @@ namespace eightmulator
                 emu.gfx[i] = 0;
             }
 
+            Console.WriteLine("Clear screen");
+
             return true;
         }
 
@@ -88,22 +90,26 @@ namespace eightmulator
             ushort p = (ushort)(op & 0x0FFF);
             emu.PC = (ushort)(p-2);
 
+            Console.WriteLine("Set PC to " + p.ToString("X"));
+
             return true;
         }
 
         public bool ret(ushort op)  //00EE
         {
-            emu.PC = (ushort)(emu.stack[emu.sp]-2);
-            emu.sp--;
+            emu.PC = (ushort)(emu.stack[--emu.sp]-2);
+
+            Console.WriteLine("Return");
 
             return true;
         }
 
         public bool call(ushort op) //0x2000
         {
-            emu.stack[emu.sp] = emu.PC;
-            ++emu.sp;
+            emu.stack[emu.sp++] = emu.PC;
             emu.PC = (ushort)((op & 0x0FFF) - 2);
+
+            Console.WriteLine("Call");
 
             return true;
         }
@@ -115,6 +121,8 @@ namespace eightmulator
 
             if (emu.V[x] == nn) emu.PC+=2;
 
+            Console.WriteLine("Skip if Vx == nn | x = " + x.ToString("X") + " Vx = " + emu.V[x].ToString("X") + " nn = " + nn.ToString("X"));
+
             return true;
         }
 
@@ -125,6 +133,8 @@ namespace eightmulator
 
             if (emu.V[x] != nn) emu.PC += 2;
 
+            Console.WriteLine("Skip if Vx != nn | x = " + x.ToString("X") + " Vx = " + emu.V[x].ToString("X") + " nn = " + nn.ToString("X"));
+
             return true;
         }
 
@@ -134,6 +144,8 @@ namespace eightmulator
             byte y = (byte)((op & 0x00F0) >> 4);
 
             if (emu.V[x] == emu.V[y]) emu.PC += 2;
+
+            Console.WriteLine("Skip if Vx != Vy | x = " + x.ToString("X") + " Vx = " + emu.V[x].ToString("X") + "y = " + y.ToString("X") + " Vy = " + emu.V[y].ToString("X"));
 
             return true;
         }
@@ -157,6 +169,8 @@ namespace eightmulator
 
             emu.V[x] += nn;
 
+            Console.WriteLine("Add nn to Vx | x = " + x.ToString("X") + " nn = " + nn.ToString("X"));
+
             return true;
         }
 
@@ -166,6 +180,8 @@ namespace eightmulator
             byte y = (byte)((op & 0x00F0) >> 4);
 
             emu.V[x] = emu.V[y];
+
+            Console.WriteLine("Load Vy to Vx | x = " + x.ToString("X") + " y = " + y.ToString("X"));
 
             return true;
         }
@@ -177,6 +193,8 @@ namespace eightmulator
 
             emu.V[x] |= emu.V[y];
 
+            Console.WriteLine("X = X OR Y");
+
             return true;
         }
 
@@ -187,6 +205,8 @@ namespace eightmulator
 
             emu.V[x] &= emu.V[y];
 
+            Console.WriteLine("X = X AND Y");
+
             return true;
         }
 
@@ -196,6 +216,8 @@ namespace eightmulator
             byte y = (byte)((op & 0x00F0) >> 4);
 
             emu.V[x] ^= emu.V[y];
+
+            Console.WriteLine("X = X XOR Y");
 
             return true;
         }
@@ -212,6 +234,8 @@ namespace eightmulator
                 emu.V[0xF] = 1;
                 emu.V[x] = 255;
             }
+
+            Console.WriteLine("X = X + Y");
 
             return true;
         }
@@ -232,6 +256,8 @@ namespace eightmulator
 
             emu.V[x] -= emu.V[y];
 
+            Console.WriteLine("X = X - Y If X > Y -> F = 1");
+
             return true;
         }
 
@@ -247,6 +273,8 @@ namespace eightmulator
             }
 
             emu.V[x] = (byte)(emu.V[x] >> 1);
+
+            Console.WriteLine("X = X >> 1");
 
             return true;
         }
@@ -267,6 +295,8 @@ namespace eightmulator
 
             emu.V[y] -= emu.V[x];
 
+            Console.WriteLine("Y = Y - X If Y > X -> F = 1 ");
+
             return true;
         }
 
@@ -282,6 +312,8 @@ namespace eightmulator
             }
 
             emu.V[x] = (byte)(emu.V[x] << 1);
+
+            Console.WriteLine(" X = X LHS 1");
 
             return true;
         }
@@ -301,6 +333,8 @@ namespace eightmulator
             byte nnn = (byte)(op & 0x0FFF);
 
             emu.I = nnn;
+
+            Console.WriteLine("Load nnn to I");
 
             return true;
         }
@@ -429,7 +463,7 @@ namespace eightmulator
 
         public bool LDIx(ushort op) //F055
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)((op & 0x0F00)>>8);
 
             for (byte i = 0; i < emu.V[x];i++)
             {
@@ -441,7 +475,7 @@ namespace eightmulator
 
         public bool LDxI(ushort op) //F065
         {
-            byte x = (byte)(op & 0x0F00);
+            byte x = (byte)((op & 0x0F00) >> 8);
 
             for (byte i = 0; i < emu.V[x]; i++)
             {

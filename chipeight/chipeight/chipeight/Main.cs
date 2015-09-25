@@ -29,14 +29,18 @@ namespace chipeight
 
         KeyboardState newS, oldS;
 
+        Rectangle canvas_size;
+
         public Main(MainForm form, Emulator emul8)
         {
             graphics = new GraphicsDeviceManager(this);
+            this.IsFixedTimeStep = true;
             Content.RootDirectory = "Content";
 
             mainForm = form;
             regForm = form.regs;
-            this.drawSurface = form.getDrawSurface() ;
+            this.drawSurface = form.getDrawSurface();
+
             graphics.PreparingDeviceSettings +=
             new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
             System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged +=
@@ -63,6 +67,7 @@ namespace chipeight
                 if (System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible == true)
                     System.Windows.Forms.Control.FromHandle((this.Window.Handle)).Visible = false;
         }
+
 
         /// <summary>
         /// Allows the game to perform any initialization it needs to before starting to run.
@@ -109,14 +114,18 @@ namespace chipeight
         {
             newS = Keyboard.GetState();
 
-            if (emul8.running)
+            if (emul8.waitKey)
             {
-                emul8.Cycle();
+                Console.WriteLine("KEY!!");
             }
-
-            if(emul8.ready && !emul8.running && (newS.IsKeyUp(Keys.Space) && oldS.IsKeyDown(Keys.Space)))
+            else
             {
-                emul8.Cycle();
+                if (emul8.running || (emul8.ready && !emul8.running && (newS.IsKeyUp(Keys.Space) && oldS.IsKeyDown(Keys.Space))))
+                {
+                    for (int i = 0; i < 60;i++)
+                        emul8.Cycle();
+                }
+
             }
 
             if (newS.IsKeyUp(Keys.P) && oldS.IsKeyDown(Keys.P))
@@ -141,10 +150,9 @@ namespace chipeight
         {
             GraphicsDevice.Clear(Color.Black);
 
-            spriteBatch.Begin();
+            spriteBatch.Begin(SpriteSortMode.BackToFront,BlendState.Additive,SamplerState.PointClamp,null,null);
 
-            if(emul8.running)
-                emul8.Draw(spriteBatch);
+            emul8.Draw(spriteBatch);
 
             spriteBatch.End();
             // TODO: Add your drawing code here

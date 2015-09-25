@@ -31,12 +31,12 @@
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.fileToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.loadToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.registersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.canvas = new System.Windows.Forms.PictureBox();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.FPSLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
-            this.debugToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.registersToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -67,6 +67,21 @@
             this.loadToolStripMenuItem.Size = new System.Drawing.Size(109, 22);
             this.loadToolStripMenuItem.Text = "Load...";
             this.loadToolStripMenuItem.Click += new System.EventHandler(this.loadToolStripMenuItem_Click);
+            // 
+            // debugToolStripMenuItem
+            // 
+            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.registersToolStripMenuItem});
+            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
+            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
+            this.debugToolStripMenuItem.Text = "Debug";
+            // 
+            // registersToolStripMenuItem
+            // 
+            this.registersToolStripMenuItem.Name = "registersToolStripMenuItem";
+            this.registersToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.registersToolStripMenuItem.Text = "Registers";
+            this.registersToolStripMenuItem.Click += new System.EventHandler(this.registersToolStripMenuItem_Click);
             // 
             // canvas
             // 
@@ -108,21 +123,6 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
-            // debugToolStripMenuItem
-            // 
-            this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.registersToolStripMenuItem});
-            this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
-            this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
-            this.debugToolStripMenuItem.Text = "Debug";
-            // 
-            // registersToolStripMenuItem
-            // 
-            this.registersToolStripMenuItem.Name = "registersToolStripMenuItem";
-            this.registersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
-            this.registersToolStripMenuItem.Text = "Registers";
-            this.registersToolStripMenuItem.Click += new System.EventHandler(this.registersToolStripMenuItem_Click);
-            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -135,6 +135,7 @@
             this.Name = "MainForm";
             this.Text = "MainForm";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.MainForm_FormClosing);
+            this.Resize += new System.EventHandler(this.MainForm_Resize);
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).EndInit();

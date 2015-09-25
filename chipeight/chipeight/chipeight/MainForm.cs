@@ -42,12 +42,18 @@ namespace chipeight
 
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
+            emul8.size = new Microsoft.Xna.Framework.Rectangle(0, 0, canvas.Size.Width, canvas.Size.Height);
             emul8.LoadFile(openFileDialog1.OpenFile());
         }
 
         private void registersToolStripMenuItem_Click(object sender, EventArgs e)
         {
             regs.Show();
+        }
+
+        private void MainForm_Resize(object sender, EventArgs e)
+        {
+            emul8.size = new Microsoft.Xna.Framework.Rectangle(0, 0, canvas.Size.Width, canvas.Size.Height);
         }
     }
 }

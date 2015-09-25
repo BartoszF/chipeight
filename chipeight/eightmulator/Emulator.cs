@@ -38,6 +38,7 @@ namespace eightmulator
         public Opcodes opcodes;
 
         Texture2D tex;
+        public Rectangle size;
 
         public void Init(GraphicsDevice gd)
         {
@@ -110,7 +111,7 @@ namespace eightmulator
 
         public void Draw(SpriteBatch sb)
         {
-            sb.Draw(tex, new Rectangle(0, 0, 64, 32), Color.White);
+            sb.Draw(tex, size, Color.White);
         }
 
         byte[] font = new byte[80]
