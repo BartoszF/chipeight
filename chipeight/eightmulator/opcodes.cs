@@ -64,7 +64,7 @@ namespace eightmulator
             }
             else
             {
-                Console.WriteLine("ERROR : UNKOWN OPCODE " + op);
+                Console.WriteLine("ERROR : UNKOWN OPCODE " + op.ToString("X"));
                 return false;
             }
         }
@@ -322,27 +322,19 @@ namespace eightmulator
         {
             byte x = emu.V[(byte)(op & 0x0F00 >> 8)];
             byte y = emu.V[(byte)(op & 0x00F0 >> 8)];
-            byte n = (byte)(op & 0x000F);
 
-            for (byte i = 0; i < n;i++)
+            for (byte yline=0;yline<(op&0x000F);yline++)
             {
-                int ind = y * 64 + x;
-                byte data = emu.memory[emu.I + i];
-
-                byte was = emu.gfx[ind];
-                emu.gfx[ind] ^= data;
-
-                if(was == 1 && emu.gfx[ind] == 0)
+                byte data = emu.memory[emu.I+yline]; //this retreives the byte for a give line of pixels
+                for(byte xpix=0;xpix<8;xpix++)
                 {
-                    emu.V[0xF] = 1;
+                    if ((data&(0x80>>xpix))!=0)
+                    {
+                        if (emu.gfx[x + (y * 64)] == 1) emu.V[0xF] = 1; //there has been a collision
+                        emu.gfx[x +(y*64)]^=1;	//note: coordinate registers from opcode
+                    }
                 }
-                else
-                {
-                    emu.V[0xF] = 0;
-                }
-
-                if (++x > 31) x = 0;
-            }
+        }
 
             emu.draw = true;
 

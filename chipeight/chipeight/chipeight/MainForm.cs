@@ -15,10 +15,13 @@ namespace chipeight
     public partial class MainForm : Form
     {
         Emulator emul8;
+        public Registers regs;
 
         public MainForm(Emulator emul8)
         {
             this.emul8 = emul8;
+            regs = new Registers(emul8);
+            regs.Hide();
             InitializeComponent();
         }
 
@@ -40,6 +43,11 @@ namespace chipeight
         private void openFileDialog1_FileOk(object sender, CancelEventArgs e)
         {
             emul8.LoadFile(openFileDialog1.OpenFile());
+        }
+
+        private void registersToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            regs.Show();
         }
     }
 }

@@ -16,7 +16,7 @@ namespace chipeight
             Emulator emul8 = new Emulator();
             MainForm form = new MainForm(emul8);
             form.Show();
-            Main game = new Main(form.getDrawSurface(),emul8);
+            Main game = new Main(form,emul8);
             game.Run();  
         }
     }

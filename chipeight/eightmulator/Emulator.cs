@@ -33,6 +33,7 @@ namespace eightmulator
         public Random random;
 
         public bool running = false;
+        public bool ready = false;
 
         public Opcodes opcodes;
 
@@ -60,6 +61,7 @@ namespace eightmulator
 
         public void LoadFile(Stream io)
         {
+            Init(tex.GraphicsDevice);
             using (BinaryReader sr = new BinaryReader(io))
             {
                 byte[] buff = sr.ReadBytes((int)sr.BaseStream.Length);
@@ -67,10 +69,10 @@ namespace eightmulator
                 for(int i=0;i<buff.Length;i++)
                 {
                     memory[0x200 + i] = buff[i];
-                    Console.Write(buff[i]);
                 }
 
-                running = true;
+                //running = true;
+                ready = true;
             }
         }
 
@@ -84,9 +86,11 @@ namespace eightmulator
 
             opcode = (ushort)((memory[PC] << 8) | (memory[PC + 1]));
 
+            Console.WriteLine(opcode.ToString("X"));
+
             if(!opcodes.DoOpcode(opcode))
             {
-                Console.WriteLine("Problem executing opcode [{0}]! PC++", opcode);
+                Console.WriteLine("Problem executing opcode [{0}]! PC++", opcode.ToString("X"));
             }
 
             if(draw)

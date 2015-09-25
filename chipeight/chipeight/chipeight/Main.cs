@@ -22,15 +22,21 @@ namespace chipeight
         SpriteBatch spriteBatch;
 
         IntPtr drawSurface;
+        MainForm mainForm;
+        Registers regForm;
 
         Emulator emul8;
 
-        public Main(IntPtr drawSurface, Emulator emul8)
+        KeyboardState newS, oldS;
+
+        public Main(MainForm form, Emulator emul8)
         {
             graphics = new GraphicsDeviceManager(this);
             Content.RootDirectory = "Content";
 
-            this.drawSurface = drawSurface;
+            mainForm = form;
+            regForm = form.regs;
+            this.drawSurface = form.getDrawSurface() ;
             graphics.PreparingDeviceSettings +=
             new EventHandler<PreparingDeviceSettingsEventArgs>(graphics_PreparingDeviceSettings);
             System.Windows.Forms.Control.FromHandle((this.Window.Handle)).VisibleChanged +=
@@ -101,16 +107,30 @@ namespace chipeight
         /// <param name="gameTime">Provides a snapshot of timing values.</param>
         protected override void Update(GameTime gameTime)
         {
-            // Allows the game to exit
-            if (GamePad.GetState(PlayerIndex.One).Buttons.Back == ButtonState.Pressed)
-                this.Exit();
+            newS = Keyboard.GetState();
 
-            if(emul8.running)
+            if (emul8.running)
+            {
                 emul8.Cycle();
+            }
+
+            if(emul8.ready && !emul8.running && (newS.IsKeyUp(Keys.Space) && oldS.IsKeyDown(Keys.Space)))
+            {
+                emul8.Cycle();
+            }
+
+            if (newS.IsKeyUp(Keys.P) && oldS.IsKeyDown(Keys.P))
+            {
+                emul8.running = !emul8.running;
+            }
+
+            regForm.RegUpdate();
 
             // TODO: Add your update logic here
 
             base.Update(gameTime);
+
+            oldS = newS;
         }
 
         /// <summary>
