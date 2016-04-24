@@ -58,6 +58,8 @@ namespace eightmulator
 
             tex = new Texture2D(gd, 64, 32);
             gd.Textures[0] = null;
+
+            gfx = new byte[64 * 32];
         }
 
         public void LoadFile(Stream io)

@@ -360,23 +360,29 @@ namespace eightmulator
 
         public bool DRWXYN(ushort op) //D000
         {
-            byte x = emu.V[(byte)((op & 0x0F00) >> 8)];
-            byte y = emu.V[(byte)((op & 0x00F0) >> 4)];
+            byte x = (byte)(emu.V[(byte)((op & 0x0F00) >> 8)] % (byte)63);
+            byte y = (byte)(emu.V[(byte)((op & 0x00F0) >> 4)] % (byte)31);
+            byte b = (byte)((op & 0x000F));
 
-            for (byte yline=0;yline<(op&0x000F);yline++)
+            for (byte yline=0;yline<b;yline++)
             {
                 byte data = emu.memory[emu.I+yline]; //this retreives the byte for a give line of pixels
                 for(byte xpix=0;xpix<8;xpix++)
                 {
-                    if ((data&(0x80>>xpix))!=0)
+                    //if ((data&(0x80>>xpix))!=0)
+                    if(GetBit(data,7-xpix) == true)
                     {
-                        if (emu.gfx[x + (y * 64)] == 1) emu.V[0xF] = 1; //there has been a collision
-                        emu.gfx[x +(y*64)]^=1;	//note: coordinate registers from opcode
+                        int pos = xpix + x + ((yline + y) * 64);
+                        if (emu.gfx[pos] == 1) emu.V[0xF] = 1; //there has been a collision
+                        else emu.V[0xF] = 0;
+                        emu.gfx[pos]^=1;	//note: coordinate registers from opcode
                     }
                 }
-        }
+            }
 
             emu.draw = true;
+
+            Console.WriteLine("Draw {0} bytes of sprite at {1},{2}", b, x, y);
 
             return true;
         }
