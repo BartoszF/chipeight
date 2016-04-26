@@ -56,8 +56,11 @@ namespace eightmulator
                 memory[i] = font[i];
             }
 
-            tex = new Texture2D(gd, 64, 32);
-            gd.Textures[0] = null;
+            if (gd != null)
+            {
+                tex = new Texture2D(gd, 64, 32);
+                gd.Textures[0] = null;
+            }
 
             gfx = new byte[64 * 32];
         }
@@ -89,11 +92,11 @@ namespace eightmulator
 
             opcode = (ushort)((memory[PC] << 8) | (memory[PC + 1]));
 
-            Console.WriteLine(opcode.ToString("X"));
+            Debugger.WriteLine(opcode.ToString("X"));
 
             if(!opcodes.DoOpcode(opcode))
             {
-                Console.WriteLine("Problem executing opcode [{0}]! PC++", opcode.ToString("X"));
+                Debugger.WriteLine("Problem executing opcode [{0}]! PC++", opcode.ToString("X"));
             }
 
             if(draw)

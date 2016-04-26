@@ -59,6 +59,7 @@
     <Reference Include="System.Net" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Debugger.cs" />
     <Compile Include="Emulator.cs" />
     <Compile Include="opcodes.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />

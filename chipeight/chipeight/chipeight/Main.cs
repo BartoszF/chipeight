@@ -122,7 +122,7 @@ namespace chipeight
             {
                 if (emul8.running || (emul8.ready && !emul8.running && (newS.IsKeyUp(Keys.Space) && oldS.IsKeyDown(Keys.Space))))
                 {
-                    //for (int i = 0; i < 60;i++)
+                    //for (int i = 0; i < 90;i++)
                         emul8.Cycle();
                 }
 
