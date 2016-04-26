@@ -366,8 +366,8 @@ namespace eightmulator
 
         public bool DRWXYN(ushort op) //D000
         {
-            byte x = (byte)(emu.V[(byte)((op & 0x0F00) >> 8)] % (byte)63);
-            byte y = (byte)(emu.V[(byte)((op & 0x00F0) >> 4)] % (byte)31);
+            byte x = (byte)(emu.V[(byte)((op & 0x0F00) >> 8)] % (byte)64);
+            byte y = (byte)(emu.V[(byte)((op & 0x00F0) >> 4)] % (byte)32);
             byte b = (byte)((op & 0x000F));
 
             for (byte yline=0;yline<b;yline++)
