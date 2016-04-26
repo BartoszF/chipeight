@@ -336,11 +336,11 @@ namespace eightmulator
 
         public bool LDIa(ushort op) //A000
         {
-            byte nnn = (byte)(op & 0x0FFF);
+            ushort nnn = (ushort)(op & 0x0FFF);
 
             emu.I = nnn;
 
-            Debugger.WriteLine("Load nnn to I");
+            Debugger.WriteLine("Load {0} to I ({1})", nnn, nnn.ToString("X"), null);
 
             return true;
         }
