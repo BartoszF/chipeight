@@ -101,6 +101,7 @@ namespace eightmulator
 
         public bool ret(ushort op)  //00EE
         {
+            if (emu.sp == 0) return false;
             emu.PC = (ushort)(emu.stack[--emu.sp]-2);
 
             Debugger.WriteLine("Return");
@@ -110,8 +111,9 @@ namespace eightmulator
 
         public bool call(ushort op) //0x2000
         {
+            if (emu.sp >= 15) return false;
             emu.stack[emu.sp++] = emu.PC;
-            emu.PC = (ushort)((op & 0x0FFF) - 2);
+            emu.PC = (ushort)((op & 0x0FFF)-2);
 
             Debugger.WriteLine("Call");
 
@@ -397,7 +399,7 @@ namespace eightmulator
         {
             byte x = (byte)((op & 0x0F00) >> 8);
 
-            if(emu.keys[emu.V[x]] != 0)
+            if(emu.keys[emu.V[x]] != Microsoft.Xna.Framework.Input.KeyState.Up)
             {
                 emu.PC += 2;
             }
@@ -409,7 +411,7 @@ namespace eightmulator
         {
             byte x = (byte)((op & 0x0F00) >> 8);
 
-            if (emu.keys[emu.V[x]] == 0)
+            if (emu.keys[emu.V[x]] == Microsoft.Xna.Framework.Input.KeyState.Up)
             {
                 emu.PC += 2;
             }

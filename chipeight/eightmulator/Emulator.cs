@@ -27,7 +27,7 @@ namespace eightmulator
         public bool draw = false;
         public ushort[] stack = new ushort[16];
         public ushort sp;
-        public byte[] keys = new byte[16];
+        public KeyState[] keys = new KeyState[16];
         public bool waitKey = false;
         public byte key;
         public Random random;

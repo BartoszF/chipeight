@@ -31,6 +31,10 @@ namespace chipeight
 
         Rectangle canvas_size;
 
+        KeyState[] keys = new KeyState[0xF];
+        Keys[] checkKeys = new Keys[] { Keys.X, Keys.D1, Keys.D2, Keys.D3, Keys.Q, Keys.W, Keys.E, Keys.A, Keys.S, Keys.D, Keys.Z, Keys.C, Keys.D4, Keys.R, Keys.V };
+
+
         public Main(MainForm form, Emulator emul8)
         {
             graphics = new GraphicsDeviceManager(this);
@@ -114,14 +118,24 @@ namespace chipeight
         {
             newS = Keyboard.GetState();
 
+            for(int i=0;i<15;i++)
+            {
+                keys[i] = newS.IsKeyDown(checkKeys[i]) == true ? KeyState.Down : KeyState.Up;
+            }
+
             if (emul8.waitKey)
             {
+                if(keys[emul8.key] == KeyState.Down)
+                {
+                    emul8.waitKey = false;
+                }
                 Console.WriteLine("KEY!!");
             }
             else
             {
                 if (emul8.running || (emul8.ready && !emul8.running && (newS.IsKeyUp(Keys.Space) && oldS.IsKeyDown(Keys.Space))))
                 {
+                    emul8.keys = keys;
                     //for (int i = 0; i < 90;i++)
                         emul8.Cycle();
                 }
