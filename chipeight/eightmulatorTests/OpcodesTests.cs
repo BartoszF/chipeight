@@ -225,7 +225,25 @@ namespace eightmulator.Tests
         [TestMethod()]
         public void SNEXyTest()
         {
-            Assert.Fail();
+            Emulator emu = getEmul();
+
+            ushort pc = emu.PC;
+
+            emu.V[0] = 10;
+            emu.V[1] = 12;
+
+            emu.opcodes.DoOpcode(0x9010);
+
+            Assert.AreNotEqual(pc, emu.PC);
+
+            pc = emu.PC;
+
+            emu.V[0] = 10;
+            emu.V[1] = 10;
+
+            emu.opcodes.DoOpcode(0x9010);
+
+            Assert.AreEqual(pc, emu.PC);
         }
 
         [TestMethod()]
@@ -235,19 +253,31 @@ namespace eightmulator.Tests
 
             emu.opcodes.DoOpcode(0xA210);
 
-            Assert.AreEqual(0x10, emu.I);
+            Assert.AreEqual(0x210, emu.I);
         }
 
         [TestMethod()]
         public void JP0aTest()
         {
-            Assert.Fail();
+            Emulator emu = getEmul();
+
+            emu.V[0] = 1;
+
+            emu.opcodes.DoOpcode(0xB100);
+
+            Assert.AreEqual(0x101, emu.I);
         }
 
         [TestMethod()]
         public void RNDxbTest()
         {
-            Assert.Fail();
+            Emulator emu = getEmul();
+
+            byte x = emu.V[0];
+
+            emu.opcodes.DoOpcode(0xC010);
+
+            Assert.AreNotEqual(x, emu.V[0]);
         }
 
         [TestMethod()]
@@ -277,19 +307,38 @@ namespace eightmulator.Tests
         [TestMethod()]
         public void LDDTxTest()
         {
-            Assert.Fail();
+            Emulator emu = getEmul();
+
+            emu.V[0] = 1;
+
+            emu.opcodes.DoOpcode(0xF015);
+
+            Assert.AreEqual(1, emu.delay_timer);
         }
 
         [TestMethod()]
         public void LDSTxTest()
         {
-            Assert.Fail();
+            Emulator emu = getEmul();
+
+            emu.V[0] = 1;
+
+            emu.opcodes.DoOpcode(0xF018);
+
+            Assert.AreEqual(1, emu.sound_timer);
         }
 
         [TestMethod()]
         public void ADDIxTest()
         {
-            Assert.Fail();
+            Emulator emu = getEmul();
+
+            ushort i = emu.I;
+            emu.V[0] = 1;
+
+            emu.opcodes.DoOpcode(0xF01E);
+
+            Assert.AreEqual(i+1, emu.I);
         }
 
         [TestMethod()]

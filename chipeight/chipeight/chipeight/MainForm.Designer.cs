@@ -37,6 +37,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.FPSLabel = new System.Windows.Forms.ToolStripStatusLabel();
             this.openFileDialog1 = new System.Windows.Forms.OpenFileDialog();
+            this.codeToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.menuStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.canvas)).BeginInit();
             this.statusStrip1.SuspendLayout();
@@ -71,7 +72,8 @@
             // debugToolStripMenuItem
             // 
             this.debugToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.registersToolStripMenuItem});
+            this.registersToolStripMenuItem,
+            this.codeToolStripMenuItem});
             this.debugToolStripMenuItem.Name = "debugToolStripMenuItem";
             this.debugToolStripMenuItem.Size = new System.Drawing.Size(54, 20);
             this.debugToolStripMenuItem.Text = "Debug";
@@ -79,7 +81,7 @@
             // registersToolStripMenuItem
             // 
             this.registersToolStripMenuItem.Name = "registersToolStripMenuItem";
-            this.registersToolStripMenuItem.Size = new System.Drawing.Size(121, 22);
+            this.registersToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
             this.registersToolStripMenuItem.Text = "Registers";
             this.registersToolStripMenuItem.Click += new System.EventHandler(this.registersToolStripMenuItem_Click);
             // 
@@ -123,6 +125,13 @@
             this.openFileDialog1.FileName = "openFileDialog1";
             this.openFileDialog1.FileOk += new System.ComponentModel.CancelEventHandler(this.openFileDialog1_FileOk);
             // 
+            // codeToolStripMenuItem
+            // 
+            this.codeToolStripMenuItem.Name = "codeToolStripMenuItem";
+            this.codeToolStripMenuItem.Size = new System.Drawing.Size(152, 22);
+            this.codeToolStripMenuItem.Text = "Code ";
+            this.codeToolStripMenuItem.Click += new System.EventHandler(this.codeToolStripMenuItem_Click);
+            // 
             // MainForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -157,5 +166,6 @@
         private System.Windows.Forms.OpenFileDialog openFileDialog1;
         private System.Windows.Forms.ToolStripMenuItem debugToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem registersToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem codeToolStripMenuItem;
     }
 }

@@ -24,6 +24,7 @@ namespace chipeight
         IntPtr drawSurface;
         MainForm mainForm;
         Registers regForm;
+        Code code;
 
         Emulator emul8;
 
@@ -43,6 +44,7 @@ namespace chipeight
 
             mainForm = form;
             regForm = form.regs;
+            code = form.code;
             this.drawSurface = form.getDrawSurface();
 
             graphics.PreparingDeviceSettings +=
@@ -138,6 +140,11 @@ namespace chipeight
                     emul8.keys = keys;
                     //for (int i = 0; i < 90;i++)
                         emul8.Cycle();
+                    regForm.RegUpdate();
+                    if (!emul8.running)
+                    {
+                        code.Update();
+                    }
                 }
 
             }
@@ -145,9 +152,14 @@ namespace chipeight
             if (newS.IsKeyUp(Keys.P) && oldS.IsKeyDown(Keys.P))
             {
                 emul8.running = !emul8.running;
+
+                if(!emul8.running)
+                {
+                    code.Update();
+                }
             }
 
-            regForm.RegUpdate();
+            
 
             // TODO: Add your update logic here
 
