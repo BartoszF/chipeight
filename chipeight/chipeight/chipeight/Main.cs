@@ -138,8 +138,15 @@ namespace chipeight
                 if (emul8.running || (emul8.ready && !emul8.running && (newS.IsKeyUp(Keys.Space) && oldS.IsKeyDown(Keys.Space))))
                 {
                     emul8.keys = keys;
-                    //for (int i = 0; i < 90;i++)
+                    if (emul8.running)
+                    {
+                        for (int i = 0; i < 120; i++)
+                            emul8.Cycle();
+                    }
+                    else
+                    {
                         emul8.Cycle();
+                    }
                     regForm.RegUpdate();
                     if (!emul8.running)
                     {
@@ -159,10 +166,6 @@ namespace chipeight
                 }
             }
 
-            
-
-            // TODO: Add your update logic here
-
             base.Update(gameTime);
 
             oldS = newS;
@@ -181,7 +184,6 @@ namespace chipeight
             emul8.Draw(spriteBatch);
 
             spriteBatch.End();
-            // TODO: Add your drawing code here
 
             base.Draw(gameTime);
         }

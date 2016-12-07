@@ -27,18 +27,29 @@ namespace chipeight
             if (this.editor != null)
             {
                 string mem = "";
-                for(int i =512;i<emul8.memory.Length;i+=2)
+                for (int i = 0; i < emul8.memory.Length; i += 2)
                 {
-                    string t = ((emul8.memory[i] << 8) | (emul8.memory[i + 1])).ToString("X");
-                    if (t != "0")
+
+                    ushort t = (ushort)((emul8.memory[i] << 8) | (emul8.memory[i + 1]));
+                    if (t != 0)
                     {
-                        mem += t;
+                        mem += t.ToString("X");
+                        if (i >= 512)
+                        {
+                            string op = emul8.opcodes.ListOpcode(t);
+                            if (op != "")
+                            {
+                                mem += "\t\t//" + op;
+                            }
+                            
+                        }
                         mem += '\n';
                     }
                 }
+                
 
                 this.editor.Text = mem;
-                //this.editor.GotoPosition((int)emul8.PC/2);
+                this.editor.GotoPosition((int)emul8.PC/2);
             }
         }
 

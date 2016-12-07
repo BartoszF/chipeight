@@ -5,50 +5,62 @@ using System.Text;
 
 namespace eightmulator
 {
+    public class Opcode
+    {
+        public Func<ushort, bool> execF;
+        public Func<ushort, string> listF;
+
+        public Opcode(Func<ushort, bool> e, Func<ushort,string> l)
+        {
+            this.execF = e;
+            this.listF = l;
+        }
+    }
     public class Opcodes
     {
-        public static Dictionary<ushort, Func<ushort, bool>> opcodes;// = new Dictionary<ushort, Func<ushort, bool>>();
+        public static Dictionary<ushort, Opcode> opcodes;// = new Dictionary<ushort, Func<ushort, bool>>();
         public static Emulator emu;
 
         public Opcodes(Emulator e)
         {
             emu = e;
 
-            opcodes = new Dictionary<ushort, Func<ushort, bool>>()
+            opcodes = new Dictionary<ushort, Opcode>()
             {
-                {0x00E0, cls},
-                {0x1000, JP},
-                {0x00EE, ret},
-                {0x2000, call},
-                {0x3000, SEXb},
-                {0x4000, SNEXb},
-                {0x5000, SEXY},
-                {0x6000, LDXb},
-                {0x7000, ADXb},
-                {0x8000, LDXY},
-                {0x8001, ORXY},
-                {0x8002, ANDXY},
-                {0x8003, XORXY},
-                {0x8004, ADDXY},
-                {0x8005, SUBXY},
-                {0x8006, SHRXY},
-                {0x8007, SUBNXY},
-                {0x8008, SHLXY},
-                {0x9000, SNEXy},
-                {0xA000, LDIa},
-                {0xB000, JP0a},
-                {0xC000, RNDxb},
-                {0xD000, DRWXYN},
-                {0xE09E, SKPx},
-                {0xE0A1, SKPNx},
-                {0xF00A, LDxk},
-                {0xF015, LDDTx},
-                {0xF018, LDSTx},
-                {0xF01E, ADDIx},
-                {0xF029, LDFx},
-                {0xF033, decVX},
-                {0xF055, LDIx},
-                {0xF065, LDxI}
+                {0x00E0, new Opcode(cls,listCls)},
+                {0x1000, new Opcode(JP,listJP)},
+                {0x00EE, new Opcode(ret,listRet)},
+                {0x2000, new Opcode(call,listCall)},
+                {0x3000, new Opcode(SEXb,listSEXb)},
+                {0x4000, new Opcode(SNEXb,listSNEXb)},
+                {0x5000, new Opcode(SEXY,listSEXY)},
+                {0x6000, new Opcode(LDXb,listLDXb)},
+                {0x7000, new Opcode(ADXb,listADXb)},
+                {0x8000, new Opcode(LDXY,listLDXY)},
+                {0x8001, new Opcode(ORXY,listORXY)},
+                {0x8002, new Opcode(ANDXY,listANDXY)},
+                {0x8003, new Opcode(XORXY,listXORXY)},
+                {0x8004, new Opcode(ADDXY,listADDXY)},
+                {0x8005, new Opcode(SUBXY,listSUBXY)},
+                {0x8006, new Opcode(SHRXY,listSHRXY)},
+                {0x8007, new Opcode(SUBNXY,listSUBNXY)},
+                {0x8008, new Opcode(SHLXY,null)},
+                {0x9000, new Opcode(SNEXy,null)},
+                {0xA000, new Opcode(LDIa,null)},
+                {0xB000, new Opcode(JP0a,null)},
+                {0xC000, new Opcode(RNDxb,null)},
+                {0xD000, new Opcode(DRWXYN,null)},
+                {0xE09E, new Opcode(SKPx,null)},
+                {0xE0A1, new Opcode(SKPNx,null)},
+                {0xF007, new Opcode(LDxDT,listLDxDT)},
+                {0xF00A, new Opcode(LDxk,null)},
+                {0xF015, new Opcode(LDDTx,null)},
+                {0xF018, new Opcode(LDSTx,null)},
+                {0xF01E, new Opcode(ADDIx,null)},
+                {0xF029, new Opcode(LDFx,null)},
+                {0xF033, new Opcode(decVX,null)},
+                {0xF055, new Opcode(LDIx,null)},
+                {0xF065, new Opcode(LDxI,null)}
             };
         }
 
@@ -56,25 +68,55 @@ namespace eightmulator
         {
             if (opcodes.ContainsKey((ushort)(op & (ushort)0xF00F)))
             {
-                return opcodes[(ushort)(op & (ushort)0xF00F)](op);
+                return opcodes[(ushort)(op & (ushort)0xF00F)].execF(op);
             }
             else if (opcodes.ContainsKey((ushort)(op & (ushort)0xF000)))
             {
-                return opcodes[(ushort)(op & (ushort)0xF000)](op);
+                return opcodes[(ushort)(op & (ushort)0xF000)].execF(op);
             }
             else if(opcodes.ContainsKey((ushort)(op & (ushort)0x000F)))
             {
-                return opcodes[(ushort)(op & (ushort)0x000F)](op);
+                return opcodes[(ushort)(op & (ushort)0x000F)].execF(op);
             }
             else if (opcodes.ContainsKey((ushort)(op & (ushort)0xF0FF)))
             {
-                return opcodes[(ushort)(op & (ushort)0xF0FF)](op);
+                return opcodes[(ushort)(op & (ushort)0xF0FF)].execF(op);
             }
             else
             {
                 Debugger.WriteLine("ERROR : UNKOWN OPCODE " + op.ToString("X"));
                 return false;
             }
+        }
+
+        public string ListOpcode(ushort op)
+        {
+            if (opcodes.ContainsKey((ushort)(op & (ushort)0xF00F)))
+            {
+                if(opcodes[(ushort)(op & (ushort)0xF00F)].listF != null)
+                    return opcodes[(ushort)(op & (ushort)0xF00F)].listF(op);
+            }
+            else if (opcodes.ContainsKey((ushort)(op & (ushort)0xF000)))
+            {
+                if(opcodes[(ushort)(op & (ushort)0xF000)].listF != null)
+                    return opcodes[(ushort)(op & (ushort)0xF000)].listF(op);
+            }
+            else if (opcodes.ContainsKey((ushort)(op & (ushort)0x000F)))
+            {
+                if(opcodes[(ushort)(op & (ushort)0x000F)].listF != null)
+                    return opcodes[(ushort)(op & (ushort)0x000F)].listF(op);
+            }
+            else if (opcodes.ContainsKey((ushort)(op & (ushort)0xF0FF)))
+            {
+                if(opcodes[(ushort)(op & (ushort)0xF0FF)].listF != null)
+                    return opcodes[(ushort)(op & (ushort)0xF0FF)].listF(op);
+            }
+            else
+            {
+                return "UNKNOWN";
+            }
+
+            return "";
         }
 
         public bool cls(ushort op)  //00E0
@@ -89,6 +131,11 @@ namespace eightmulator
             return true;
         }
 
+        public string listCls(ushort op)
+        {
+            return "CLS";
+        }
+
         public bool JP(ushort op)   //1000
         {
             ushort p = (ushort)(op & 0x0FFF);
@@ -97,6 +144,13 @@ namespace eightmulator
             Debugger.WriteLine("Set PC to " + p.ToString("X"));
 
             return true;
+        }
+
+        public string listJP(ushort op)   //1000
+        {
+            ushort p = (ushort)(op & 0x0FFF);
+
+            return "JP #"+p.ToString("X");
         }
 
         public bool ret(ushort op)  //00EE
@@ -109,6 +163,11 @@ namespace eightmulator
             return true;
         }
 
+        public string listRet(ushort op)
+        {
+            return "RET";
+        }
+
         public bool call(ushort op) //0x2000
         {
             if (emu.sp >= 15) return false;
@@ -118,6 +177,13 @@ namespace eightmulator
             Debugger.WriteLine("Call");
 
             return true;
+        }
+
+        public string listCall(ushort op) //0x2000
+        {
+            ushort p = (ushort)((op & 0x0FFF) - 2);
+
+            return "CALL #" + p.ToString("X");
         }
 
         public bool SEXb(ushort op) //3000
@@ -132,6 +198,14 @@ namespace eightmulator
             return true;
         }
 
+        public string listSEXb(ushort op) //3000
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte nn = (byte)(op & 0x00FF);
+
+            return "SE "+x.ToString("X") + ", #"+nn.ToString("X");
+        }
+
         public bool SNEXb(ushort op) //4000
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -142,6 +216,14 @@ namespace eightmulator
             Debugger.WriteLine("Skip if Vx != nn | x = " + x.ToString("X") + " Vx = " + emu.V[x].ToString("X") + " nn = " + nn.ToString("X"));
 
             return true;
+        }
+
+        public string listSNEXb(ushort op) //4000
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte nn = (byte)(op & 0x00FF);
+
+            return "SNE " + x.ToString("X") + ", #" + nn.ToString("X");
         }
 
         public bool SEXY(ushort op) //5000
@@ -156,6 +238,14 @@ namespace eightmulator
             return true;
         }
 
+        public string listSEXY(ushort op) //5000
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "SE " + x.ToString("X") + ", " + y.ToString("X");
+        }
+
         public bool LDXb(ushort op) //6000
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -166,6 +256,14 @@ namespace eightmulator
             emu.V[x] = nn;
 
             return true;
+        }
+
+        public string listLDXb(ushort op) //6000
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte nn = (byte)(op & 0x00FF);
+
+            return "LD " + x.ToString("X") + ", #" + nn.ToString("X");
         }
 
         public bool ADXb(ushort op) //7000
@@ -180,6 +278,14 @@ namespace eightmulator
             return true;
         }
 
+        public string listADXb(ushort op) //7000
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte nn = (byte)(op & 0x00FF);
+
+            return "ADD "+x.ToString("X") + ", #" + nn.ToString("X");
+        }
+
         public bool LDXY(ushort op) //8000
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -190,6 +296,14 @@ namespace eightmulator
             Debugger.WriteLine("Load Vy to Vx | x = " + x.ToString("X") + " y = " + y.ToString("X"));
 
             return true;
+        }
+
+        public string listLDXY(ushort op) //8000
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "LD " + x.ToString("X") + ", " + y.ToString("X");
         }
 
         public bool ORXY(ushort op) //8001
@@ -204,6 +318,14 @@ namespace eightmulator
             return true;
         }
 
+        public string listORXY(ushort op) //8001
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "OR " + x.ToString("X") + ", " + y.ToString("X");
+        }
+
         public bool ANDXY(ushort op) //8002
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -216,6 +338,14 @@ namespace eightmulator
             return true;
         }
 
+        public string listANDXY(ushort op) //8002
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "AND " + x.ToString("X") + ", " + y.ToString("X");
+        }
+
         public bool XORXY(ushort op) //8003
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -226,6 +356,14 @@ namespace eightmulator
             Debugger.WriteLine("X = X XOR Y");
 
             return true;
+        }
+
+        public string listXORXY(ushort op) //8003
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "XOR " + x.ToString("X") + ", " + y.ToString("X");
         }
 
         public bool ADDXY(ushort op) //8004
@@ -246,6 +384,14 @@ namespace eightmulator
             Debugger.WriteLine("X = X + Y");
 
             return true;
+        }
+
+        public string listADDXY(ushort op) //8004
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "ADD " + x.ToString("X") + ", " + y.ToString("X");
         }
 
         public bool SUBXY(ushort op) //8005
@@ -269,6 +415,14 @@ namespace eightmulator
             return true;
         }
 
+        public string listSUBXY(ushort op) //8005
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "SUB " + x.ToString("X") + ", " + y.ToString("X");
+        }
+
         public bool SHRXY(ushort op) //8006
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -285,6 +439,14 @@ namespace eightmulator
             Debugger.WriteLine("X = X >> 1");
 
             return true;
+        }
+
+        public string listSHRXY(ushort op) //8006
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "SHR " + x.ToString("X") + ", " + y.ToString("X");
         }
 
         public bool SUBNXY(ushort op) //8007
@@ -306,6 +468,14 @@ namespace eightmulator
             Debugger.WriteLine("Y = Y - X If Y > X -> F = 1 ");
 
             return true;
+        }
+
+        public string listSUBNXY(ushort op) //8007
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+            byte y = (byte)((op & 0x00F0) >> 4);
+
+            return "SUBN " + x.ToString("X") + ", " + y.ToString("X");
         }
 
         public bool SHLXY(ushort op) //8008
@@ -407,6 +577,13 @@ namespace eightmulator
             return true;
         }
 
+        public string listSKPx(ushort op) //E09E
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+
+            return "SKP " + x.ToString("X");
+        }
+
         public bool SKPNx(ushort op) //E0A1
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -419,6 +596,29 @@ namespace eightmulator
             return true;
         }
 
+        public string listSKPNx(ushort op) //E0A1
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+
+            return "SKPN " + x.ToString("X");
+        }
+
+        public bool LDxDT(ushort op) //F007
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+
+            emu.V[x] = emu.delay_timer;
+
+            return true;
+        }
+
+        public string listLDxDT(ushort op) //F007
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+
+            return "LD " + x.ToString("X") + ", DT";
+        }
+
         public bool LDxk(ushort op) //F00A
         {
             byte x = (byte)((op & 0x0F00) >> 8);
@@ -428,6 +628,13 @@ namespace eightmulator
             emu.key = x;
 
             return true;
+        }
+
+        public string listLDxk(ushort op) //F00A
+        {
+            byte x = (byte)((op & 0x0F00) >> 8);
+
+            return "LD " + x.ToString("X") + ", K";
         }
 
         public bool LDDTx(ushort op) //F015
